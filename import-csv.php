@@ -65,6 +65,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		$this->map( $args, $assoc_args );
 
+		// Confirm data write
 		WP_CLI::confirm( 'Ready to write all the things to the database?', '' );
 
 		if ( ! is_array( $this->data ) ) {
@@ -73,16 +74,17 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
+		// Loop through mapped data and save each type
 		foreach ( $this->data as $k => $v ) {
 
 			if ( isset( $v[ 'post' ] ) ) {
 
+				// All posts need a title, 
 				if ( ! isset( $v[ 'post' ][ 'post_title' ] ) ) {
 
-					WP_CLI::warning( 'row #' . $k . ' needs a post title...' );
+					WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
 
-
-					return false;
+					continue;
 
 				}
 
@@ -365,7 +367,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 	}
 
 	/**
-	 * Check if file exists
+	 * Check if import file exists
 	 * @access private
 	 * @return bool true on success
 	 */
@@ -384,7 +386,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 	}
 
 	/**
-	 * save row as post
+	 * insert row post data
 	 * @access private
 	 * @param  $post_data post data to be saved
 	 * @return bool true on success
@@ -601,7 +603,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			} else {
 
-				WP_CLI::success( 'post id ' . $post_id . ' ' . $k . ' downloaded from ' . $image );
+				WP_CLI::success( 'post id ' . $post_id . ' thumbnail ' . $k . ' downloaded from ' . $image );
 
 			}
 

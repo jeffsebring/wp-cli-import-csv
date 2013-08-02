@@ -26,7 +26,7 @@ Here is an example which would check file headers, then mapping of a file named 
 
 When setting up headers the first time, it saves a little time and possibly a lot of messages to just use the check command to validate the headers:
 
-    wp importcsv map engineers.csv --post_type=pu01_engineers --author=jennyengineer
+    wp importcsv check engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
 Once headers validate, we can check the data mapping:
 
