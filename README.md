@@ -3,7 +3,7 @@ WP CLI Import CSV
 
 **`importcsv` is a [WP CLI](http://wp-cli.org) command for flexible importing of content from .csv formatted files to WordPress.**
 
-**Because of the data writing nature of this command, and it's beta stage, use it at entirely your own risk. Back up all your things.**
+**Back up your database.**
 
 * Version - 0.0.1-beta
 * Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
