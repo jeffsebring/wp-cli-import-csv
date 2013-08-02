@@ -22,23 +22,33 @@ There are 2 commands included which will allow you to check the validity of your
 
 The syntax and arguments are the same for all the commands.
 
-Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and display verbose messages. 
+Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and set jennyengineer as the author. 
 
 When setting up headers the first time, it saves a little time and possibly a lot of messages to just use the check command to validate the headers:
 
-    wp importcsv map engineers.csv --post_type=pu01_engineers --verbose=true
+    wp importcsv map engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
 Once headers validate, we can check the data mapping:
 
-    wp importcsv map engineers.csv --post_type=pu01_engineers --verbose=true
+    wp importcsv map engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
 If we get no error messages, we can write to the database with nearly the same command:
 
-    wp importcsv write engineers.csv --post_type=pu01_engineers --verbose=true
+    wp importcsv write engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
 *post type can be over-ridden using a correctly named field in the import file*
 
-#### Thumbnail Path
+### Optional Command Parameters
+
+#### --post_type=post type name
+
+Specify a post type
+
+#### --author=username or id
+
+Specify an author for posts
+
+#### --thumbnail_path=url or relative path
 
 For importing and attaching of thumbnails ( multiple if desired ) to posts, either ensure the path in the database field is correct, or you can add a ( --thumbnail_path=url or relative path ) argument to prepend file names in a thumbnail field while sideloading into the media library.
 
