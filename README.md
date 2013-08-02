@@ -5,7 +5,7 @@ WP CLI Import CSV
 
 ** Because of the data writing nature of this command, and it's beta stage, use it at entirely your own risk. Back up all your things.**
 
-* Version - 0.0.1-alpha
+* Version - 0.0.1-beta
 * Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
 * License - [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
 
