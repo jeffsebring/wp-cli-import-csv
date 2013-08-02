@@ -3,7 +3,7 @@ WP CLI Import CSV
 
 **`importcsv` is a [WP CLI](http://wp-cli.org) command for flexible importing of content from .csv formatted files to WordPress.**
 
-** Because of the data writing nature of this command, and it's beta stage, use it at entirely your own risk. Back up all your things.**
+**Because of the data writing nature of this command, and it's beta stage, use it at entirely your own risk. Back up all your things.**
 
 * Version - 0.0.1-beta
 * Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
@@ -97,13 +97,13 @@ Thumbnails may be attached to posts, sideloaded from external url's or relative 
 
 With this example, we use the specific name 'featured_image' to specify these images are to be attached as the default post thumbnail.
 
-    thumbnail-esc_url-featured_image
+    thumbnail-absint-featured_image
 
 For users of plugins like [Multiple Post Thumbnails](https://github.com/voceconnect/multi-post-thumbnails), other names will be set in post meta.
 
 If we use the header parameters importing to our pu01_engineers post type:
 
-    thumbnail-esc_url-secondary_image
+    thumbnail-absint-secondary_image
 
 The meta key will be the following:
 
