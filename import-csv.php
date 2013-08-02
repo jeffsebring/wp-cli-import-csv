@@ -66,7 +66,6 @@ class ImportCSV_Command extends WP_CLI_Command {
 		$this->map( $args, $assoc_args );
 
 		WP_CLI::confirm( 'Ready to write all the things to the database?', '' );
-		WP_CLI::confirm( 'We could be writing big data here! ARE YOU SURE?', '' );
 
 		if ( ! is_array( $this->data ) ) {
 
@@ -477,7 +476,13 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			}
 
-		} else {
+		} elseif ( is_wp_error( $post_id ) ) {
+
+			foreach ( $post_id->errors as $error ) {
+
+				WP_CLI::warning( $error[ 0 ] );
+
+			}
 
 			return false;
 
@@ -574,7 +579,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			// Set variables for storage
 			// fix file filename for query strings
-			preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png|svg)\b/i', $image, $matches );
+			preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $image, $matches );
 			$file_array[ 'name' ] = basename( $matches[ 0 ] );
 			$file_array[ 'tmp_name' ] = $tmp_image;
 
@@ -585,6 +590,12 @@ class ImportCSV_Command extends WP_CLI_Command {
 				$file_array[ 'tmp_name' ] = '';
 
 				WP_CLI::warning( $image . ' could not be downloaded from ' . $k . ' for post id ' . $post_id );
+
+				foreach ( $tmp_image->errors as $error ) {
+
+					WP_CLI::warning( $error[ 0 ] );
+
+				}
 
 				continue;
 
@@ -616,6 +627,12 @@ class ImportCSV_Command extends WP_CLI_Command {
 			if ( is_wp_error( $attachment_id = media_handle_sideload( $file_array, $post_id, wp_kses_post( $image_meta[ 'post_title' ] ), $image_meta ) ) ) {
 
 				WP_CLI::warning( $image . ' could not be attached to post id ' . $post_id );
+
+				foreach ( $attachment_id->errors as $error ) {
+
+					WP_CLI::warning( 'WP Error: ' . $error[ 0 ] );
+
+				}
 
 				continue;
 
