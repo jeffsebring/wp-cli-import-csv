@@ -564,6 +564,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 * @access private
 	 * @param integer $post_id post id to attach thumbnails to
 	 * @param array $thumbnails thumbnails to be imported
+	 * @param array $post parent post data
+	 * @param string|integer $author author id or name
 	 * @return bool true on success
 	 */
 	private function _thumbnails( $post_id, $thumbnails, $post = array(), $author = null ) {
