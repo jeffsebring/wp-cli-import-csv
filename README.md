@@ -9,10 +9,10 @@ WP CLI Import CSV
 * Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
 * License - [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
 
-`importcsv` Commands
---------------------
+`importcsv` Subcommands
+-----------------------
 
-There are 2 commands included which will allow you to check the validity of your arguments, and file header settings. `write` is the only command that will write to the database. The output allows you to review data mapping what will be imported before asking for confirmation of database write.
+There are 2 subcommands included which will allow you to check the validity of your arguments, and file header settings. `write` is the only subcommand will write to the database. The output allows you to review data mapping what will be imported before asking for confirmation of database write.
 
 * `check` - validates import file headers
 * `map` - maps data using headers ( uses `check` )
@@ -20,7 +20,7 @@ There are 2 commands included which will allow you to check the validity of your
 
 ### Command Arguments & Syntax
 
-The syntax and arguments are the same for all the commands.
+The syntax and arguments are the same for all the subcommands.
 
 Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and set jennyengineer as the author. 
 

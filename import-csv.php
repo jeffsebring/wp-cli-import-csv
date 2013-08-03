@@ -70,7 +70,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		if ( ! is_array( $this->data ) ) {
 
-			return WP_CLI::error( 'no data to import...' );
+			return WP_CLI::error( 'no data to import!' );
 
 		}
 
@@ -168,7 +168,15 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 				} else {
 
-					WP_CLI::line( 'row #' . $num . ' ' . $v[ 'name' ] . ' mapped to ' . $v[ 'type' ] . ' as ' . $row[ $k ] . '...' );
+					if ( $row[ $k ] == null ) {
+
+						WP_CLI::warning( 'row #' . $num . ' ' . $v[ 'type' ] . ' ' . $v[ 'name' ] . ' is null...' );
+
+					} else {
+
+						WP_CLI::line( 'row #' . $num . ' ' . $v[ 'type' ] . ' ' . $v[ 'name' ] . ' is ' . $row[ $k ] . '...' );
+
+					}
 
 				}
 
@@ -203,18 +211,32 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		if ( isset( $assoc_args[ 'author' ] ) && is_int( $assoc_args[ 'author' ] ) ) {
 
-			$this->author = $assoc_args[ 'author' ];
+			if ( ! get_userdata( $assoc_args[ 'author' ] ) ) {
 
-		} elseif ( isset( $assoc_args[ 'author' ] ) && is_string( $assoc_args[ 'author' ] ) && ( $author_id = username_exists( $assoc_args[ 'author' ] ) ) ) {
+				WP_CLI::error( 'user id ' . $assoc_args[ 'author' ] . ' does not exist!' );
 
-			$this->author = $author_id;
+			} else {
 
-		}
+				$this->author = $assoc_args[ 'author' ];
 
-		// set author
-		if ( isset( $assoc_args[ 'author' ] ) ) {
+				WP_CLI::success( 'user id ' . $assoc_args[ 'author' ] . ' exists...' );
 
-			$this->author = $assoc_args[ 'author' ];
+			}
+
+		} elseif ( isset( $assoc_args[ 'author' ] ) && is_string( $assoc_args[ 'author' ] ) ) {
+
+
+			if ( ! $author_id = username_exists( $assoc_args[ 'author' ] ) ) {
+
+				WP_CLI::error( 'user name ' . $assoc_args[ 'author' ] . ' does not exist!' );
+
+			} else {
+
+				$this->author = $author_id;
+
+				WP_CLI::success( 'user name ' . $assoc_args[ 'author' ] . ' exists...' );
+
+			}
 
 		}
 
@@ -232,7 +254,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		} else {
 
-			return WP_CLI::error( 'file not specified...' );
+			return WP_CLI::error( 'file not specified!' );
 
 		}
 
@@ -244,7 +266,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		} else {
 
-			return WP_CLI::error( $assoc_args[ 'post_type' ] . ' post type does not exist' );
+			return WP_CLI::error( $assoc_args[ 'post_type' ] . ' post type does not exist!' );
 
 		}
 
@@ -286,7 +308,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( ! isset( $header[ 0 ] ) || ! in_array( $header[ 0 ], array( 'post', 'meta', 'taxonomy', 'thumbnail', 'blank' ) ) ) {
 
-				WP_CLI::error( $raw_header . ' - ' . $header[ 0 ] . ' is an invalid field type. possible types are meta, post, taxonomy, thumbnail' );
+				WP_CLI::error( $raw_header . ' - ' . $header[ 0 ] . ' is an invalid field type. possible types are meta, post, taxonomy, thumbnail!' );
 
 				continue;
 
@@ -294,7 +316,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( ! isset( $header[ 1 ] ) ||  ! function_exists( $header[ 1 ] ) ) {
 
-				WP_CLI::error( $raw_header . ' - ' . $header[ 1 ] . ' is an undefined function. ensure your sanitization function exists' );
+				WP_CLI::error( $raw_header . ' - ' . $header[ 1 ] . ' is an undefined function. ensure your sanitization function exists!' );
 
 				continue;
 
@@ -302,7 +324,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( ! isset( $header[ 0 ] ) || $header[ 0 ] == 'taxonomy' && ! taxonomy_exists( $header[ 2 ] ) ) {
 
-				WP_CLI::error( $raw_header . ' - ' . $header[ 2 ] . ' is an not a registered taxonomy.' );
+				WP_CLI::error( $raw_header . ' - ' . $header[ 2 ] . ' is an not a registered taxonomy!' );
 
 				continue;
 
@@ -316,14 +338,14 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			$this->headers[] = $validated_header;
 
-			WP_CLI::line( 'header "' . $validated_header[ 'name' ] . '" - "' . $validated_header[ 'type' ] . '" data - sanitized with "' . $validated_header[ 'sanitize' ] . '"' );
+			WP_CLI::line( 'header ' . $validated_header[ 'type' ] . ' ' . $validated_header[ 'name' ] . ' value will be sanitized with ' . $validated_header[ 'sanitize' ] );
 
 		}
 
 
 		if ( count( $this->csv ) !== count( $this->headers ) ) {
 
-			return WP_CLI::error( 'headers are incorrectly formatted, try again...' );
+			return WP_CLI::error( 'headers are incorrectly formatted, try again!' );
 
 		}
 
@@ -345,7 +367,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		if ( ! $this->csv = fgetcsv( $this->file ) ) {
 
-			return WP_CLI::error( 'unable to read file ' . $this->file . ', check formatting...' );
+			return WP_CLI::error( 'unable to read file ' . $this->file . ', check formatting!' );
 
 		}
 
@@ -366,7 +388,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		if ( ! $this->file = fopen( $this->file, 'r' ) ) {
 
-			return WP_CLI::error( 'unable to open file ' . $this->file . ', check permissions...' );
+			return WP_CLI::error( 'unable to open file ' . $this->file . ', check permissions!' );
 
 		}
 
@@ -385,7 +407,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		if ( ! file_exists( $this->file ) ) {
 
-			return WP_CLI::error( 'file ' . $this->file . ' does not exist...' );
+			return WP_CLI::error( 'file ' . $this->file . ' does not exist!' );
 
 		}
 
@@ -515,7 +537,15 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( update_post_meta( $post_id, $k, $sanitize( $v[ 'value' ] ), get_post_meta( $post_id, $k, true ) ) ) {
 
-				WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
+				if ( $v[ 'value' ] == null ) {
+
+					WP_CLI::warning( 'post id ' . $post_id . ' meta key ' . $k . ' added as null' );
+
+				} else {
+
+					WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
+
+				}
 
 			} else {
 
@@ -540,9 +570,9 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		foreach ( $taxonomies as $k => $v ) {
 
-			if ( $v[ 'value' ] == '' ) {
+			if ( $v[ 'value' ] == null ) {
 
-				WP_CLI::warning( $k . ' value was blank for post id ' . $post_id );
+				WP_CLI::warning( $k . ' term value was null for post id ' . $post_id . ', skipping...' );
 
 				continue;
 
