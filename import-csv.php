@@ -17,7 +17,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 */
 	public $csv = null;
 
-	/**mor e
+	/**
 	 * import file
 	 * @var string
 	 */
