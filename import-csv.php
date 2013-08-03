@@ -17,7 +17,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 */
 	public $csv = null;
 
-	/**
+	/**mor e
 	 * import file
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 			if ( isset( $v[ 'post' ] ) ) {
 
 				// All posts need a title, 
-				if ( ! isset( $v[ 'post' ][ 'post_title' ] ) ) {
+				if ( ! isset( $v[ 'post' ][ 'post_title' ][ 'value' ] ) && $v[ 'post' ][ 'post_title' ][ 'value' ] !== '' ) {
 
 					WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
 
@@ -121,7 +121,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 					}
 
 					// Suppress Imagick::queryFormats strict static method error from WP core
-					@$this->_thumbnails( $post_id, $v[ 'thumbnail' ], $v[ 'post' ][ 'post_title' ], $author );
+					@$this->_thumbnails( $post_id, $v[ 'thumbnail' ], $v[ 'post' ], $author );
 
 				}
 
@@ -198,6 +198,16 @@ class ImportCSV_Command extends WP_CLI_Command {
 		if ( isset( $assoc_args[ 'thumbnail_path' ] ) ) {
 
 			$this->thumbnail_path = $assoc_args[ 'thumbnail_path' ];
+
+		}
+
+		if ( isset( $assoc_args[ 'author' ] ) && is_int( $assoc_args[ 'author' ] ) ) {
+
+			$this->author = $assoc_args[ 'author' ];
+
+		} elseif ( isset( $assoc_args[ 'author' ] ) && is_string( $assoc_args[ 'author' ] ) && ( $author_id = username_exists( $assoc_args[ 'author' ] ) ) ) {
+
+			$this->author = $author_id;
 
 		}
 
@@ -388,7 +398,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 	/**
 	 * insert row post data
 	 * @access private
-	 * @param  $post_data post data to be saved
+	 * @param array $post_data post data to be saved
 	 * @return bool true on success
 	 */
 	private function _insert( $post_data ) {
@@ -444,17 +454,13 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			// wheeee
 
-		} elseif ( isset($post[ 'post_author' ] ) && is_string( $post[ 'post_author' ] ) && ( $author_id = username_exists( $post[ 'post_author' ] ) ) ) {
+		} elseif ( isset( $post[ 'post_author' ] ) && is_string( $post[ 'post_author' ] ) && ( $author_id = username_exists( $post[ 'post_author' ] ) ) ) {
 
 			$post[ 'post_author' ] = $author_id;
 
 		} elseif ( isset( $this->author ) && is_int( $this->author ) ) {
 
 			$post[ 'post_author' ] = $this->author;
-
-		} elseif ( $this->author && is_string( $this->author ) && ( $author_id = username_exists( $this->author ) ) ) {
-
-			$post[ 'post_author' ] = $author_id;
 
 		}
 
@@ -497,8 +503,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 	/**
 	 * save row metadata
 	 * @access private
-	 * @param $post_id post id to attach thumbnails to
-	 * @param $meta_data meta data to be saved
+	 * @param integer $post_id post id to attach thumbnails to
+	 * @param array $meta_data meta data to be saved
 	 * @return bool true on success
 	 */
 	private function _meta( $post_id, $meta_data ) {
@@ -526,8 +532,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 	/**
 	 * save row taxomies
 	 * @access private
-	 * @param $post_id post id to attach thumbnails to
-	 * @param $taxonomies taxonomy data to be saved
+	 * @param integer $post_id post id to attach thumbnails to
+	 * @param array $taxonomies taxonomy data to be saved
 	 * @return bool true on success
 	 */
 	private function _taxonomies( $post_id, $taxonomies ) {
@@ -556,11 +562,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 	/**
 	 * save row thumbnails
 	 * @access private
-	 * @param $post_id post id to attach thumbnails to
-	 * @param $thumbnails thumbnails to be imported
+	 * @param integer $post_id post id to attach thumbnails to
+	 * @param array $thumbnails thumbnails to be imported
 	 * @return bool true on success
 	 */
-	private function _thumbnails( $post_id, $thumbnails, $title = null, $author = null ) {
+	private function _thumbnails( $post_id, $thumbnails, $post = array(), $author = null ) {
 
 		foreach ( $thumbnails as $k => $v ) {
 
@@ -608,9 +614,10 @@ class ImportCSV_Command extends WP_CLI_Command {
 			}
 
 			// Image Metadata
-			if ( $title ) {
+			if ( isset( $post[ 'post_title' ][ 'value' ] ) ) {
 
-				$image_meta[ 'post_title' ] = wp_kses_post( $title );
+				$image_meta[ 'post_title' ] = wp_kses_post( $post[ 'post_title' ][ 'value' ] );
+				WP_CLI::success( 'post id ' . $post_id . ' thumbnail ' . $k . ' titled ' . $image_meta[ 'post_title' ] );
 
 			}
 
@@ -626,7 +633,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			}
 
-			if ( is_wp_error( $attachment_id = media_handle_sideload( $file_array, $post_id, wp_kses_post( $image_meta[ 'post_title' ] ), $image_meta ) ) ) {
+			if ( is_wp_error( $attachment_id = media_handle_sideload( $file_array, $post_id, wp_kses_post( $post[ 'post_excerpt' ][ 'value' ] ), $image_meta ) ) ) {
 
 				WP_CLI::warning( $image . ' could not be attached to post id ' . $post_id );
 
