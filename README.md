@@ -26,15 +26,15 @@ Here is an example which would check file headers, then mapping of a file named 
 
 When setting up headers the first time, use the check command to only display initial file, post type, author and header settngs:
 
-    wp importcsv check engineers.csv --post_type=<post type name> --author=<username or id>
+    wp importcsv check <filename>.csv --post_type=<post type name> --author=<username or id>
 
 Once headers validate, check the data mapping:
 
-    wp importcsv map engineers.csv --post_type=<post type name> --author=<username or id>
+    wp importcsv map <filename>.csv --post_type=<post type name> --author=<username or id>
 
 If no error messages display, write to the database:
 
-    wp importcsv write engineers.csv --post_type=<post type name> --author=<username or id>
+    wp importcsv write <filename>.csv --post_type=<post type name> --author=<username or id>
 
 *post type can be over-ridden using a correctly named header field*
 
@@ -79,15 +79,15 @@ Example of a header for a field that would contain the post title:
 
 #### Meta
 
-Meta data is attached to the inserted post using `add_post_meta()`. This example will attach the column of data to post meta data with the key `home_town`:
+Meta data is attached to the inserted post using `add_post_meta()`. This example will attach the column of data to post meta data with the key `_home_town`:
 
-    meta-sanitize_key-home_town
+    meta-sanitize_key-_home_town
 
 #### Taxonomy
 
-Attaches posts to any registered taxonomy using `wp_set_object_terms()`. This sets namespaced custom taxonomy, 'team':
+Attaches posts to any registered taxonomy using `wp_set_object_terms()`. This sets namespaced custom taxonomy, 'kbof_team':
 
-    taxonomy-sanitize_title_with_dashes-pu01_team
+    taxonomy-sanitize_title_with_dashes-kbof_team
 
 *Only one term may be set at this time.*
 
@@ -108,7 +108,6 @@ If we use the header parameters importing to our pu01_engineers post type:
 The meta key will be the following:
 
     pu01_engineers_secondary_image_thumbnail_id
-
 
 ## Data Validation
 
