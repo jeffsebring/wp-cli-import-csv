@@ -101,7 +101,7 @@ With this example, we use the specific name 'featured_image' to specify these im
 
 For users of plugins like [Multiple Post Thumbnails](https://github.com/voceconnect/multi-post-thumbnails), other names will be set in post meta.
 
-If we use the header parameters importing to our pu01_engineers post type:
+If we use the header parameters importing to a post type with the name pu01_engineers:
 
     thumbnail-absint-secondary_image
 
