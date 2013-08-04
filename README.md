@@ -42,15 +42,15 @@ If no error messages display, write to the database:
 
 Specify a post type
 
-    --post_type=post type name
+    --post_type=<post type name>
 
 Specify an author for posts
 
-    --author=username or id
+    --author=<username or id>
 
 For importing and attaching of thumbnails ( multiple if desired ) to posts, either ensure the path in the database field is correct, or you can add a ( --thumbnail_path=url or relative path ) argument to prepend file names in a thumbnail field while sideloading into the media library.
 
-    --thumbnail_path=url or relative path
+    --thumbnail_path=<url or relative path>
 
 CSV Import File Header Formatting
 ---------------------------------
@@ -65,7 +65,7 @@ There are 3 parameters to set in each column header, separated by a hyphen ( - )
 * Sanitization/Escaping callback function (function must be defined)
 * Field name (underscored delimited field name)
 
-*** If a column is blank for some reason, simply make it's header 'blank'
+*** If a column is blank for some reason, simply name it's header 'blank'
 
 ### Data Types
 
@@ -73,7 +73,7 @@ There are 3 parameters to set in each column header, separated by a hyphen ( - )
 
 The post data type may only contain valid post fields. The data is added using `wp_insert_post()`
 
-Here is an example of a header for a field that would contain the post title:
+Example of a header for a field that would contain the post title:
 
     post-wp_kses_post-post_title
 
