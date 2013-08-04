@@ -12,7 +12,7 @@ WP CLI Import CSV
 `importcsv` Subcommands
 -----------------------
 
-There are 2 subcommands included which will allow you to check the validity of your arguments, and file header settings. `write` is the only subcommand will write to the database. The output allows you to review data mapping what will be imported before asking for confirmation of database write.
+There are 2 subcommands included to check the validity of your arguments, and file header settings. `write` is the only subcommand which will write to the database. The terminal output allows you to review data mapping what will be imported before asking for confirmation of database write.
 
 * `check` - validates import file headers
 * `map` - maps data using headers ( uses `check` )
@@ -24,33 +24,33 @@ The syntax and arguments are the same for all the subcommands.
 
 Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and set jennyengineer as the author. 
 
-When setting up headers the first time, it saves a little time and possibly a lot of messages to just use the check command to validate the headers:
+When setting up headers the first time, use the check command to only display initial file, post type, author and header settngs:
 
     wp importcsv check engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
-Once headers validate, we can check the data mapping:
+Once headers validate, check the data mapping:
 
     wp importcsv map engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
-If we get no error messages, we can write to the database with nearly the same command:
+If no error messages display, write to the database:
 
     wp importcsv write engineers.csv --post_type=pu01_engineers --author=jennyengineer
 
-*post type can be over-ridden using a correctly named field in the import file*
+*post type can be over-ridden using a correctly named header field*
 
 ### Optional Command Parameters
 
-#### --post_type=post type name
-
 Specify a post type
 
-#### --author=username or id
+    --post_type=post type name
 
 Specify an author for posts
 
-#### --thumbnail_path=url or relative path
+    --author=username or id
 
 For importing and attaching of thumbnails ( multiple if desired ) to posts, either ensure the path in the database field is correct, or you can add a ( --thumbnail_path=url or relative path ) argument to prepend file names in a thumbnail field while sideloading into the media library.
+
+    --thumbnail_path=url or relative path
 
 CSV Import File Header Formatting
 ---------------------------------
@@ -110,13 +110,21 @@ The meta key will be the following:
     pu01_engineers_secondary_image_thumbnail_id
 
 
-## Sanitization
+## Data Validation
 
 The second parameter in each column header specifies the sanitization/validation callback used when saving data. The script will check that the functions are defined, but ultimately sanitization is up to you. This feature also gives you the ability to implement validation by creating your own sanitization functions.
 
 ## Field Names
 
 The third and last parameter is field name. It is either a valid post field, meta key of your choice, namespace of your thumbnail image, or a taxonomy
+
+## Useful WordPress Codex Pages
+
+* [Post Types](http://codex.wordpress.org/Post_Types) & [Taxonomies](http://codex.wordpress.org/Taxonomies)
+* [wp_insert_post](http://codex.wordpress.org/Function_Reference/wp_insert_post) - lists post data keys
+* [Custom Fields](http://codex.wordpress.org/Custom_Fields)
+* [Post Thumbnails](https://codex.wordpress.org/Post_Thumbnails)
+* [Data Validation](http://codex.wordpress.org/Data_Validation)
 
 ## More WP CLI
 
