@@ -26,15 +26,15 @@ Here is an example which would check file headers, then mapping of a file named 
 
 When setting up headers the first time, use the check command to only display initial file, post type, author and header settngs:
 
-    wp importcsv check engineers.csv --post_type=pu01_engineers --author=jennyengineer
+    wp importcsv check engineers.csv --post_type=<post type name> --author=<username or id>
 
 Once headers validate, check the data mapping:
 
-    wp importcsv map engineers.csv --post_type=pu01_engineers --author=jennyengineer
+    wp importcsv map engineers.csv --post_type=<post type name> --author=<username or id>
 
 If no error messages display, write to the database:
 
-    wp importcsv write engineers.csv --post_type=pu01_engineers --author=jennyengineer
+    wp importcsv write engineers.csv --post_type=<post type name> --author=<username or id>
 
 *post type can be over-ridden using a correctly named header field*
 
