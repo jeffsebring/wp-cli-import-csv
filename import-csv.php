@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @package WP-CLI ImportCSV Command
  * @author 10up / Jeff Sebring <jeff@10up.com>
@@ -8,6 +8,7 @@
 
 // Define command
 WP_CLI::add_command( 'importcsv', 'ImportCSV_Command' );
+ini_set("auto_detect_line_endings", "1");
 
 class ImportCSV_Command extends WP_CLI_Command {
 
@@ -55,7 +56,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * import file data
-	 * @synopsis write --post_type=<post>
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -79,7 +80,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( isset( $v[ 'post' ] ) ) {
 
-				// All posts need a title, 
+				// All posts need a title,
 				if ( ! isset( $v[ 'post' ][ 'post_title' ][ 'value' ] ) && $v[ 'post' ][ 'post_title' ][ 'value' ] !== '' ) {
 
 					WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
@@ -137,7 +138,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Map row data based on csv file headers
-	 * @synopsis map --post_type=<post>
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -194,7 +195,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Checks and reads import file
-	 * @synopsis check --post_type=<post>
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -209,7 +210,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
-		if ( isset( $assoc_args[ 'author' ] ) && is_int( $assoc_args[ 'author' ] ) ) {
+		if ( isset( $assoc_args[ 'author' ] ) && intval( $assoc_args[ 'author' ] ) == $assoc_args[ 'author' ] ) {
 
 			if ( ! get_userdata( $assoc_args[ 'author' ] ) ) {
 
