@@ -589,7 +589,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
 
-			do_action( 'wpclicsv_taxonomy_success', $key, $value, $post_id );
+			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id );
 
 		}
 
