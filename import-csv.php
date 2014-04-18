@@ -491,6 +491,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' created' );
 
+			do_action( 'wpclicsv_post_success', $post_id );
+
 			foreach ( $post as $k => $v ) {
 
 				WP_CLI::success( 'post id ' . $post_id . ' ' . $k . ' inserted as ' . $v );
@@ -535,14 +537,16 @@ class ImportCSV_Command extends WP_CLI_Command {
 		foreach ( $meta_data as $k => $v ) {
 
 			$sanitize = $v[ 'sanitize' ];
+			$value = $sanitize( $v[ 'value' ] );
 
-			if ( update_post_meta( $post_id, $k, $sanitize( $v[ 'value' ] ), get_post_meta( $post_id, $k, true ) ) ) {
+			if ( update_post_meta( $post_id, $k, $value, get_post_meta( $post_id, $k, true ) ) ) {
 
 				if ( $v[ 'value' ] == null ) {
 
 					WP_CLI::warning( 'post id ' . $post_id . ' meta key ' . $k . ' added as null' );
 
 				} else {
+					do_action( 'wpclicsv_meta_success', $k, $value, $post_id );
 
 					WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
 
@@ -580,9 +584,12 @@ class ImportCSV_Command extends WP_CLI_Command {
 			}
 
 			$sanitize = $v[ 'sanitize' ];
-			wp_set_object_terms( $post_id, $sanitize( $v[ 'value' ] ), $k );
+			$value = $sanitize( $v[ 'value' ] );
+			wp_set_object_terms( $post_id, $value, $k );
 
-			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $v[ 'value' ] );
+			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
+
+			do_action( 'wpclicsv_taxonomy_success', $key, $value, $post_id );
 
 		}
 
