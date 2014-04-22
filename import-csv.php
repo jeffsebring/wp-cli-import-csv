@@ -1,13 +1,17 @@
-<?php 
+<?php
 /**
  * @package WP-CLI ImportCSV Command
  * @author 10up / Jeff Sebring <jeff@10up.com>
  * @link http://10up.com
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3
+ * @version 0.0.1-beta2
  */
+
+
 
 // Define command
 WP_CLI::add_command( 'importcsv', 'ImportCSV_Command' );
+ini_set("auto_detect_line_endings", "1");
 
 class ImportCSV_Command extends WP_CLI_Command {
 
@@ -55,7 +59,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * import file data
-	 * @synopsis write --post_type=<post>
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -79,7 +83,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( isset( $v[ 'post' ] ) ) {
 
-				// All posts need a title, 
+				// All posts need a title,
 				if ( ! isset( $v[ 'post' ][ 'post_title' ][ 'value' ] ) && $v[ 'post' ][ 'post_title' ][ 'value' ] !== '' ) {
 
 					WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
@@ -137,7 +141,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Map row data based on csv file headers
-	 * @synopsis map --post_type=<post>
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -194,7 +198,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Checks and reads import file
-	 * @synopsis check --post_type=<post>
+	 * @synopsis check <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -209,7 +213,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
-		if ( isset( $assoc_args[ 'author' ] ) && is_int( $assoc_args[ 'author' ] ) ) {
+
+		if ( isset( $assoc_args[ 'author' ] ) && $this->_string_is_int( $assoc_args[ 'author' ] ) ) {
 
 			if ( ! get_userdata( $assoc_args[ 'author' ] ) ) {
 
@@ -480,7 +485,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			$post[ 'post_author' ] = $author_id;
 
-		} elseif ( isset( $this->author ) && is_int( $this->author ) ) {
+		} elseif ( isset( $this->author ) && $this->_string_is_int( $this->author ) ) {
 
 			$post[ 'post_author' ] = $this->author;
 
@@ -489,6 +494,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 		if ( ! is_wp_error( $post_id = wp_insert_post( $post ) ) ) {
 
 			WP_CLI::success( 'post id ' . $post_id . ' created' );
+
+			do_action( 'wpclicsv_post_success', $post_id );
 
 			foreach ( $post as $k => $v ) {
 
@@ -534,14 +541,16 @@ class ImportCSV_Command extends WP_CLI_Command {
 		foreach ( $meta_data as $k => $v ) {
 
 			$sanitize = $v[ 'sanitize' ];
+			$value = $sanitize( $v[ 'value' ] );
 
-			if ( update_post_meta( $post_id, $k, $sanitize( $v[ 'value' ] ), get_post_meta( $post_id, $k, true ) ) ) {
+			if ( update_post_meta( $post_id, $k, $value, get_post_meta( $post_id, $k, true ) ) ) {
 
 				if ( $v[ 'value' ] == null ) {
 
 					WP_CLI::warning( 'post id ' . $post_id . ' meta key ' . $k . ' added as null' );
 
 				} else {
+					do_action( 'wpclicsv_meta_success', $k, $value, $post_id );
 
 					WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
 
@@ -579,9 +588,12 @@ class ImportCSV_Command extends WP_CLI_Command {
 			}
 
 			$sanitize = $v[ 'sanitize' ];
-			wp_set_object_terms( $post_id, $sanitize( $v[ 'value' ] ), $k );
+			$value = $sanitize( $v[ 'value' ] );
+			wp_set_object_terms( $post_id, $value, $k );
 
-			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $v[ 'value' ] );
+			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
+
+			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id );
 
 		}
 
@@ -697,6 +709,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		return true;
 
+	}
+
+	// Determines wether or not a string is just an integer
+	private function _string_is_int($val) {
+		return (string)(int) $val == $val;
 	}
 
 }
