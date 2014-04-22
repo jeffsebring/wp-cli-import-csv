@@ -481,7 +481,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			$post[ 'post_author' ] = $author_id;
 
-		} elseif ( isset( $this->author ) && is_int( $this->author ) ) {
+		} elseif ( isset( $this->author ) && intval( $this->author ) == $this->author ) {
 
 			$post[ 'post_author' ] = $this->author;
 
