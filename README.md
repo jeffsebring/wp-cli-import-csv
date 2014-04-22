@@ -133,6 +133,7 @@ For more information about the ultra powerful WP CLI, visit the website - http:/
 
 ### 0.0.1-beta2
 - Added Changelog
+- Added actions on each import item
 - Check for WP-CLI dependency before running
 - Force php auto line break detection for csvs
 - Updated @synopsis syntax to be compatible with latest  WP-CLI
