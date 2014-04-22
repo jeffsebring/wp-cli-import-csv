@@ -5,7 +5,7 @@ WP CLI Import CSV
 
 **Back up your database.**
 
-* Version - 0.0.1-beta
+* Version - 0.0.1-beta2
 * Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
 * License - [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
 
@@ -22,7 +22,7 @@ There are 2 subcommands included to check the validity of your arguments, and fi
 
 The syntax and arguments are the same for all the subcommands.
 
-Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and set jennyengineer as the author. 
+Here is an example which would check file headers, then mapping of a file named `engineers.csv` ( in the current directory ) to be imported to the `pu01_engineers` post type, and set jennyengineer as the author.
 
 When setting up headers the first time, use the check command to only display initial file, post type, author and header settngs:
 
@@ -128,3 +128,12 @@ The third and last parameter is field name. It is either a valid post field, met
 ## More WP CLI
 
 For more information about the ultra powerful WP CLI, visit the website - http://wp-cli.org, or browse the tools here on Github - https://github.com/wp-cli.
+
+## Changelog
+
+### 0.0.1-beta2
+- Added Changelog
+- Check for WP-CLI dependency before running
+- Force php auto line break detection for csvs
+- Updated @synopsis syntax to be compatible with latest  WP-CLI
+- Updated author id check to properly accept integer values across all machines

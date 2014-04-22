@@ -4,7 +4,10 @@
  * @author 10up / Jeff Sebring <jeff@10up.com>
  * @link http://10up.com
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3
+ * @version 1.1
  */
+
+
 
 // Define command
 WP_CLI::add_command( 'importcsv', 'ImportCSV_Command' );
@@ -195,7 +198,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Checks and reads import file
-	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
+	 * @synopsis check <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -210,7 +213,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
-		if ( isset( $assoc_args[ 'author' ] ) && intval( $assoc_args[ 'author' ] ) == $assoc_args[ 'author' ] ) {
+
+		if ( isset( $assoc_args[ 'author' ] ) && $this->_string_is_int( $assoc_args[ 'author' ] ) ) {
 
 			if ( ! get_userdata( $assoc_args[ 'author' ] ) ) {
 
@@ -481,7 +485,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			$post[ 'post_author' ] = $author_id;
 
-		} elseif ( isset( $this->author ) && intval( $this->author ) == $this->author ) {
+		} elseif ( isset( $this->author ) && $this->_string_is_int( $this->author ) ) {
 
 			$post[ 'post_author' ] = $this->author;
 
@@ -705,6 +709,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		return true;
 
+	}
+
+	// Determines wether or not a string is just an integer
+	private function _string_is_int($val) {
+		return (string)(int) $val == $val;
 	}
 
 }
