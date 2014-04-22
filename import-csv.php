@@ -4,7 +4,7 @@
  * @author 10up / Jeff Sebring <jeff@10up.com>
  * @link http://10up.com
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3
- * @version 1.1
+ * @version 0.0.1-beta2
  */
 
 
