@@ -5,10 +5,6 @@ WP CLI Import CSV
 
 **Back up your database.**
 
-* Version - 0.0.1-beta2
-* Author - [10up](http://10up.com) / [Jeff Sebring](http://jeffsebring.com)
-* License - [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html)
-
 `importcsv` Subcommands
 -----------------------
 

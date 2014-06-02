@@ -1,13 +1,13 @@
 <?php
 /**
  * @package WP-CLI ImportCSV Command
- * @author 10up / Jeff Sebring <jeff@10up.com>
- * @link http://10up.com
+ * @author Jeff Sebring <jeff@jeffsebring.com>
+ * @link http://jeffsebring.com
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3
  * @version 0.0.1-beta2
+ *
+ * Contributors: kidfiction
  */
-
-
 
 // Define command
 WP_CLI::add_command( 'importcsv', 'ImportCSV_Command' );
