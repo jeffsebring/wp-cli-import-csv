@@ -328,7 +328,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 			}
 			
 			// Rebuild $header[ 2 ] so it supports keys and taxonomies with dashes
-			$header[ 2 ] = implode( '-', array_slice( $headers, 2 ) );
+			$header[ 2 ] = implode( '-', array_slice( $header, 2 ) );
 
 			if ( ! isset( $header[ 0 ] ) || $header[ 0 ] == 'taxonomy' && ! taxonomy_exists( $header[ 2 ] ) ) {
 
