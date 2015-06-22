@@ -134,7 +134,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 				}
 
-				do_action( 'wpclicsv_post_imported', $post_id, $saved_data, $this );
+				do_action( 'wpclicsv_post_imported', $post_id, $saved_data, $v, $this );
 
 				WP_CLI::success( 'row #' . $k . ' imported successful to post id ' . $post_id . '...' );
 
