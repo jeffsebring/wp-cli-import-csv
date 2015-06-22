@@ -136,7 +136,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			}
 
-			do_action( 'wpclicsv_post_imported', $post_id, $saved_data );
+			do_action( 'wpclicsv_post_imported', $post_id, $saved_data, $this );
 
 			WP_CLI::success( 'row #' . $k . ' imported successful to post id ' . $post_id . '...' );
 
@@ -199,7 +199,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		fclose( $this->file );
 
-		$this->data = apply_filters( 'wpclicsv_mapped_data', $this->data, $assoc_args['post_type'], array( 'headers' => $this->headers, 'assoc_args' => $assoc_args ) );
+		$this->data = apply_filters( 'wpclicsv_mapped_data', $this->data, $assoc_args, $this );
 
 		return true;
 
@@ -504,7 +504,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' created' );
 
-			do_action( 'wpclicsv_post_success', $post_id );
+			do_action( 'wpclicsv_post_success', $post_id, $this );
 
 			foreach ( $post as $k => $v ) {
 
@@ -562,7 +562,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 				} else {
 
-					do_action( 'wpclicsv_meta_success', $k, $value, $post_id );
+					do_action( 'wpclicsv_meta_success', $k, $value, $post_id, $this );
 
 					WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
 
@@ -609,7 +609,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
 
-			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id );
+			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id, $this );
 
 			$terms[ $k ] = $value;
 
