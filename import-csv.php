@@ -198,7 +198,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Checks and reads import file
-	 * @synopsis check <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
+	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
