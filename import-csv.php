@@ -313,7 +313,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( ! isset( $header[ 0 ] ) || ! in_array( $header[ 0 ], array( 'post', 'meta', 'taxonomy', 'thumbnail', 'blank' ) ) ) {
 
-				WP_CLI::error( $raw_header . ' - ' . $header[ 0 ] . ' is an invalid field type. possible types are meta, post, taxonomy, thumbnail!' );
+				WP_CLI::warning( $raw_header . ' - ' . $header[ 0 ] . ' is an invalid field type. possible types are meta, post, taxonomy, thumbnail!' );
 
 				continue;
 
