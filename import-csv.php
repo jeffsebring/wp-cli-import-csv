@@ -302,8 +302,6 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		$this->_read();
 
-		$blanks = 0;
-
 		foreach ( $this->csv as $raw_header ) {
 
 			$header = explode( '-', $raw_header );
@@ -322,9 +320,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			if ( ! isset( $header[ 0 ] ) || ! in_array( $header[ 0 ], array( 'post', 'meta', 'taxonomy', 'thumbnail', 'blank' ) ) ) {
 
-				WP_CLI::error( $raw_header . ' - ' . $header[ 0 ] . ' is an invalid field type. possible types are meta, post, taxonomy, thumbnail!' );
-
-				continue;
+				WP_CLI::warning( $raw_header . ' - ' . $header[ 0 ] . ' is an unsupported field type. Possible types are meta, post, taxonomy, thumbnail!' );
 
 			}
 
@@ -358,7 +354,6 @@ class ImportCSV_Command extends WP_CLI_Command {
 			WP_CLI::line( 'header ' . $validated_header[ 'type' ] . ' ' . $validated_header[ 'name' ] . ' value will be sanitized with ' . $validated_header[ 'sanitize' ] );
 
 		}
-
 
 		if ( count( $this->csv ) !== count( $this->headers ) ) {
 
