@@ -100,15 +100,20 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 				}
 
+				$saved_data = array();
+
+				$saved_data['post_id'] = $post_id;
+				$saved_data['post'] = $v['post'];
+
 				if ( isset( $post_id ) && isset( $v[ 'meta' ] ) ) {
 
-					$this->_meta( $post_id, $v[ 'meta' ] );
+					$saved_data['meta'] = $this->_meta( $post_id, $v[ 'meta' ] );
 
 				}
 
 				if ( isset( $v[ 'taxonomy' ] ) ) {
 
-					$this->_taxonomies( $post_id, $v[ 'taxonomy' ] );
+					$saved_data['terms'] = $this->_taxonomies( $post_id, $v[ 'taxonomy' ] );
 
 				}
 
@@ -125,13 +130,15 @@ class ImportCSV_Command extends WP_CLI_Command {
 					}
 
 					// Suppress Imagick::queryFormats strict static method error from WP core
-					@$this->_thumbnails( $post_id, $v[ 'thumbnail' ], $v[ 'post' ], $author );
+					$saved_data['thumbnails'] = @$this->_thumbnails( $post_id, $v[ 'thumbnail' ], $v[ 'post' ], $author );
 
 				}
 
-			}
+				do_action( 'wpclicsv_post_imported', $post_id, $saved_data, $v, $this );
 
-			WP_CLI::success( 'row #' . $k . ' imported successful to post id ' . $post_id . '...' );
+				WP_CLI::success( 'row #' . $k . ' imported successful to post id ' . $post_id . '...' );
+
+			}
 
 		}
 
@@ -191,6 +198,8 @@ class ImportCSV_Command extends WP_CLI_Command {
 		}
 
 		fclose( $this->file );
+
+		$this->data = apply_filters( 'wpclicsv_mapped_data', $this->data, $assoc_args, $this );
 
 		return true;
 
@@ -498,7 +507,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' created' );
 
-			do_action( 'wpclicsv_post_success', $post_id );
+			do_action( 'wpclicsv_post_success', $post_id, $this );
 
 			foreach ( $post as $k => $v ) {
 
@@ -537,9 +546,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 * @access private
 	 * @param integer $post_id post id to attach thumbnails to
 	 * @param array $meta_data meta data to be saved
-	 * @return bool true on success
+	 * @return array Metadata as inserted
 	 */
 	private function _meta( $post_id, $meta_data ) {
+
+		$meta = array();
 
 		foreach ( $meta_data as $k => $v ) {
 
@@ -553,9 +564,12 @@ class ImportCSV_Command extends WP_CLI_Command {
 					WP_CLI::warning( 'post id ' . $post_id . ' meta key ' . $k . ' added as null' );
 
 				} else {
-					do_action( 'wpclicsv_meta_success', $k, $value, $post_id );
+
+					do_action( 'wpclicsv_meta_success', $k, $value, $post_id, $this );
 
 					WP_CLI::success( 'post id ' . $post_id . ' meta key ' . $k . ' added as ' . $v[ 'value' ] );
+
+					$meta[ $k ] = $value;
 
 				}
 
@@ -567,7 +581,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
-		return true;
+		return $meta;
 
 	}
 
@@ -576,9 +590,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 * @access private
 	 * @param integer $post_id post id to attach thumbnails to
 	 * @param array $taxonomies taxonomy data to be saved
-	 * @return bool true on success
+	 * @return array Taxonomy terms as inserted
 	 */
 	private function _taxonomies( $post_id, $taxonomies ) {
+
+		$terms = array();
 
 		foreach ( $taxonomies as $k => $v ) {
 
@@ -596,11 +612,13 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
 
-			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id );
+			do_action( 'wpclicsv_taxonomy_success', $k, $value, $post_id, $this );
+
+			$terms[ $k ] = $value;
 
 		}
 
-		return true;
+		return $terms;
 
 	}
 
@@ -611,9 +629,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 * @param array $thumbnails thumbnails to be imported
 	 * @param array $post parent post data
 	 * @param string|integer $author author id or name
-	 * @return bool true on success
+	 * @return array Thumbnail IDs as inserted
 	 */
 	private function _thumbnails( $post_id, $thumbnails, $post = array(), $author = null ) {
+
+		$thumbs = array();
 
 		foreach ( $thumbnails as $k => $v ) {
 
@@ -694,6 +714,11 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			}
 
+			$thumbs[ $k ] = array(
+				'attachment_id' => $attachment_id,
+				'file'          => $v['value']
+			);
+
 			if ( ( $k == 'featured_image' ) && set_post_thumbnail( $post_id, $attachment_id ) ) {
 
 				WP_CLI::success( 'post id ' . $post_id . ' thumbnail ' . $k . ' attached from ' . $v[ 'value' ] );
@@ -710,7 +735,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		}
 
-		return true;
+		return $thumbs;
 
 	}
 
