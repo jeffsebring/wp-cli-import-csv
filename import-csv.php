@@ -324,14 +324,14 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 			}
 
-			if ( ! isset( $header[ 1 ] ) ||  ! function_exists( $header[ 1 ] ) ) {
+			if ( $header[ 1 ] != 'blank' && ( ! isset( $header[ 1 ] ) ||  ! function_exists( $header[ 1 ] ) ) ) {
 
 				WP_CLI::error( $raw_header . ' - ' . $header[ 1 ] . ' is an undefined function. ensure your sanitization function exists!' );
 
 				continue;
 
 			}
-			
+
 			// Rebuild $header[ 2 ] so it supports keys and taxonomies with dashes
 			$header[ 2 ] = implode( '-', array_slice( $header, 2 ) );
 
@@ -478,7 +478,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 			if ( in_array( $k, $post_fields ) ) {
 
 				$sanitize = $v[ 'sanitize' ];
-				$post[ $k ] = $sanitize( $v[ 'value' ] );
+				$post[ $k ] = $this->_sanitize( $sanitize, $v[ 'value' ] );
 
 			}
 
@@ -550,7 +550,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 		foreach ( $meta_data as $k => $v ) {
 
 			$sanitize = $v[ 'sanitize' ];
-			$value = $sanitize( $v[ 'value' ] );
+			$value = $this->_sanitize( $sanitize, $v[ 'value' ] );
 
 			if ( update_post_meta( $post_id, $k, $value, get_post_meta( $post_id, $k, true ) ) ) {
 
@@ -602,7 +602,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 			}
 
 			$sanitize = $v[ 'sanitize' ];
-			$value = $sanitize( $v[ 'value' ] );
+			$value = $this->_sanitize( $sanitize, $v[ 'value' ] );
 			wp_set_object_terms( $post_id, $value, $k );
 
 			WP_CLI::success( 'post id ' . $post_id . ' added to ' . $k . ' as ' . $value );
@@ -739,4 +739,16 @@ class ImportCSV_Command extends WP_CLI_Command {
 		return (string)(int) $val == $val;
 	}
 
+	/**
+	 * Sanitize when $func is not 'blank'
+	 * @param  string $func function callback
+	 * @param  any    $val  to be sanitized item
+	 * @return any          either sanitized or as-is
+	 */
+	private function _sanitize( $func, $val ) {
+		if ( $func != 'blank' ) {
+			return $func( $val );
+		}
+		return $val;
+	}
 }
