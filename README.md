@@ -58,7 +58,7 @@ The importer uses the headers ( first line ) of files with specific formatting t
 There are 3 parameters to set in each column header, separated by a hyphen ( - ):
 
 * Data Type (post|meta|taxonomy|thumbnail)
-* Sanitization/Escaping callback function (function must be defined)
+* Sanitization/Escaping callback function (function must be defined, or use `blank` to skip)
 * Field name (underscored delimited field name)
 
 *** If a column is blank for some reason, simply name it's header 'blank'
