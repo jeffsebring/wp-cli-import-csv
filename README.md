@@ -73,6 +73,10 @@ Example of a header for a field that would contain the post title:
 
     post-wp_kses_post-post_title
 
+If using a previously created post, just specify the post ID:
+
+    post-blank-ID
+
 #### Meta
 
 Meta data is attached to the inserted post using `add_post_meta()`. This example will attach the column of data to post meta data with the key `_home_town`:

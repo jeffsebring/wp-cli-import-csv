@@ -59,7 +59,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * import file data
-	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
+	 * @synopsis <file> [--post_type=<post>] [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -82,15 +82,6 @@ class ImportCSV_Command extends WP_CLI_Command {
 		foreach ( $this->data as $k => $v ) {
 
 			if ( isset( $v[ 'post' ] ) ) {
-
-				// All posts need a title,
-				if ( ! isset( $v[ 'post' ][ 'post_title' ][ 'value' ] ) && $v[ 'post' ][ 'post_title' ][ 'value' ] !== '' ) {
-
-					WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
-
-					continue;
-
-				}
 
 				if ( ! $post_id = $this->_insert( $v[ 'post' ] ) ) {
 
@@ -148,7 +139,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Map row data based on csv file headers
-	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
+	 * @synopsis <file> [--post_type=<post>] [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -207,7 +198,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 	/**
 	 * Checks and reads import file
-	 * @synopsis <file> --post_type=<post> [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
+	 * @synopsis <file> [--post_type=<post>] [--author=<author>] [--verbose=<verbose>] [--thumbnail_path=<thumbnail_path>]
 	 * @access public
 	 * @param $args array command arguments
 	 * @param $assoc_args associative command arguments
@@ -280,7 +271,7 @@ class ImportCSV_Command extends WP_CLI_Command {
 
 		} else {
 
-			return WP_CLI::error( $assoc_args[ 'post_type' ] . ' post type does not exist!' );
+			WP_CLI::warning( $assoc_args[ 'post_type' ] . ' post type not specified or does not exist!' );
 
 		}
 
@@ -436,6 +427,20 @@ class ImportCSV_Command extends WP_CLI_Command {
 	 * @return bool true on success
 	 */
 	private function _insert( $post_data ) {
+
+		// Either create a new post or use provided ID
+		if ( count( $post_data ) === 1 && isset( $post_data[ 'ID' ][ 'value' ] ) && $post_data[ 'ID' ][ 'value' ] ) {
+
+			return $post_data[ 'ID' ][ 'value' ];
+
+		} else if ( ! isset( $post_data[ 'post_title' ][ 'value' ] ) && $post_data[ 'post_title' ][ 'value' ] !== '' ) {
+			// All new posts need a title
+
+			WP_CLI::warning( 'row #' . $k . ' skipped - needs a post title...' );
+
+			return false;
+
+		}
 
 		$post[ 'post_title' ] = $post_data[ 'post_title' ];
 
